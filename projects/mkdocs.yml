@@ -1,0 +1,17 @@
+site_name: 'Elastic ML Whitelist Guide'
+nav:
+  - Home: index.md
+theme:
+  name: 'material'
+  language: 'en'
+  palette:
+    primary: 'blue'
+    accent: 'light blue'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+  logo: 'images/logo.png'
+extra_css:
+  - stylesheets/extra.css
+markdown_extensions:
+  - pymdownx.superfences
