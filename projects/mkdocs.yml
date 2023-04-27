@@ -3,7 +3,6 @@ nav:
   - Home: index.md
 theme:
   name: 'material'
-  language: 'en'
   palette:
     primary: 'blue'
     accent: 'light blue'
@@ -13,5 +12,11 @@ theme:
   logo: 'images/logo.png'
 extra_css:
   - stylesheets/extra.css
+plugins:
+  - search
 markdown_extensions:
   - pymdownx.superfences
+  - codehilite:
+      guess_lang: false
+      linenums: true
+      noclasses: true
