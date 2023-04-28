@@ -1,0 +1,16 @@
+body {
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  code {
+    font-family: 'Roboto Mono', monospace;
+  }
+  
+  blockquote {
+    border-left-color: var(--md-color-primary);
+    color: var(--md-color-primary);
+  }
+  
+  p, h1, h2, h3, h4, h5, h6 {
+    color: var(--md-color-primary);
+  }
