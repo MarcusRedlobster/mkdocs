@@ -34,7 +34,7 @@ def remove_hyphens_from_csv(file_name):
 for column in df.columns:
     df[column] = df[column].astype(str).str.replace('-', '')
 
-# Save the modified train to a new CSV file
+# Save the modified df to a new CSV file
 df.to_csv('clean.csv', index=False)
 
 ```
