@@ -116,6 +116,8 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest.html
 
 https://www.elastic.co/guide/en/elasticsearch/client/eland/current/overview.html
 
+https://www.youtube.com/watch?v=w8RwRO8gI_s&pp=ygUNZWxhbmQgZWxhc3RpYw%3D%3D
+
 ### Index
 
 An Inference Processor is part of the Elasticsearch ingest pipeline that allows you to use pre-trained Ml Models to enrich data during indexing. So it'll apply the ML Model to incoming documents and add the model's prediction results as new fields in the documents before they are stored in an Elastic index.
