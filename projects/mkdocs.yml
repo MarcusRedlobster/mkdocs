@@ -1,6 +1,6 @@
-site_name: 'Elastic ML Whitelist Guide'
+site_name: 'Red Lobster Projects'
 nav:
-  - Home: index.md
+  - Elastic ML Whitelist Project: index.md
 theme:
   name: 'material'
   palette:
@@ -9,7 +9,7 @@ theme:
   font:
     text: 'Roboto'
     code: 'Roboto Mono'
-  logo: 'images/logo.png'
+  logo: 'images/redlobster.png'
 extra_css:
   - stylesheets/extra.css
 plugins:

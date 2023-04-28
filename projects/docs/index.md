@@ -26,25 +26,20 @@ from sklearn.inspection import permutation_importance
 #### Cleaning of Data
 
 ```python
-
-# !--CLEANING OF data--!
-
 def remove_hyphens_from_csv(file_name):
 # Read the CSV file
-    train = pd.read_csv(file_name)
+    df = pd.read_csv(file_name)
 
 # Iterate through each column and remove hyphens
-for column in train.columns:
-    train[column] = train[column].astype(str).str.replace('-', '')
+for column in df.columns:
+    df[column] = df[column].astype(str).str.replace('-', '')
 
 # Save the modified train to a new CSV file
-train.to_csv('clean.csv', index=False)
+df.to_csv('clean.csv', index=False)
 
 ```
-
+#### Feature Encoding
 ```python
-# !--Feature Encoding--!
-
 # Read data
 df = pd.read_csv('clean.csv')
 
@@ -58,10 +53,8 @@ for col in df.columns:
         df[col + '_hash'] = df.apply(lambda row: hash(f"{col}_{row[col]}"), axis=1)
 
 ```
-
+#### Model Training
 ```python
-# !--Model Training--!
-
 # Independant Variables
 X = df[['Features']]
 
@@ -76,6 +69,8 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 ```
 ```python
+# !--Random Forest Model--!
+
 from sklearn.ensemble import RandomForestClassifier
 
 Rmodel = RandomForestClassifier(n_estimators=100)
@@ -98,6 +93,13 @@ Accuracy: 0.9726027397260274
 Precision: 0.9523809523809523
 Recall: 0.9523809523809523
 F1 Score: 0.9523809523809523
+```
+
+```python
+# Convert model into a .pkl file
+
+from joblib import dump
+dump(model, 'model.pkl')
 ```
 
 ### 2. Import the Model into Elasticsearch
