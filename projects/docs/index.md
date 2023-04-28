@@ -212,6 +212,16 @@ https://www.elastic.co/guide/en/elasticsearch/client/eland/current/overview.html
 
 https://www.youtube.com/watch?v=w8RwRO8gI_s&pp=ygUNZWxhbmQgZWxhc3RpYw%3D%3D
 
-### Index
+### Terms
 
-An Inference Processor is part of the Elasticsearch ingest pipeline that allows you to use pre-trained Ml Models to enrich data during indexing. So it'll apply the ML Model to incoming documents and add the model's prediction results as new fields in the documents before they are stored in an Elastic index.
+##### An Inference Processor: is part of the Elasticsearch ingest pipeline that allows you to use pre-trained Ml Models to enrich data during indexing. So it'll apply the ML Model to incoming documents and add the model's prediction results as new fields in the documents before they are stored in an Elastic index.
+
+##### Feature Encoding: Feature encoding is the process of converting non-numeric data types (e.g., categorical or textual data) into a numerical format that can be used by machine learning algorithms. Many machine learning algorithms require input data to be in a numerical format, so feature encoding is a critical pre-processing step when working with non-numeric features.
+
+##### Accuracy: Accuracy is a metric used to evaluate the performance of a classification model. It is calculated as the ratio of the number of correct predictions to the total number of predictions made. In other words, it measures how well a model correctly classifies instances in the dataset.
+
+##### Precision: Precision is a measure of the accuracy of positive predictions made by a classification model. It is calculated as the ratio of true positive predictions (correctly identified positive instances) to the sum of true positive and false positive predictions (instances incorrectly identified as positive). High precision indicates that a model is good at avoiding false positives.
+
+##### Recall: Recall, also known as sensitivity or true positive rate, is a measure of a classification model's ability to identify all the relevant instances in the dataset. It is calculated as the ratio of true positive predictions to the sum of true positive and false negative predictions (instances incorrectly identified as negative). High recall indicates that a model is good at identifying positive instances and minimizing false negatives.
+
+##### F1 Score:The F1 Score is a metric that combines precision and recall to provide a single measure of a classification model's performance. It is the harmonic mean of precision and recall and ranges between 0 and 1, with 1 indicating perfect precision and recall. The F1 Score is particularly useful when dealing with imbalanced datasets, where one class is more frequent than the other, as it takes into account both false positives and false negatives. A high F1 Score indicates that the model has a good balance between precision and recall.
