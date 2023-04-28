@@ -112,6 +112,8 @@ output {
 
 https://eland.readthedocs.io/en/v8.3.0/reference/api/eland.ml.MLModel.import_model.html
 
+https://eland.readthedocs.io/en/7.9.1a1/examples/introduction_to_eland_webinar.html#Machine-Learning-Demo
+
 https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest.html
 
 https://www.elastic.co/guide/en/elasticsearch/client/eland/current/overview.html
