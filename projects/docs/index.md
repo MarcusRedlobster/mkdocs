@@ -21,13 +21,13 @@ es_client = Elasticsearch("http://localhost:9200")
 
 ```
 
-#### Replace 'path/to/your/trained_model.pkl' with the path to your saved model file
+Replace 'path/to/trained_model.pkl' with the path to saved model file
 
 ```
-with open("path/to/your/trained_model.pkl", "rb") as model_file:
+with open("path/to/trained_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
-model_id = "your-imported-model-id"
+model_id = "imported-model-id"
 ed.ml.import_model(es_client, model, model_id)
 
 ```
@@ -39,13 +39,13 @@ pipeline_id = "whitelist-prediction-pipeline"
 
 pipeline_body = {
     "description": "Pipeline to predict if an alert should be whitelisted",
-    "processors": [
+    "processors": [ 
         {
             "inference": {
                 "model_id": model_id,
                 "inference_config": {"classification": {}},
-                "field_map": {},
-                "target_field": "whitelist_prediction",
+                "field_map": {}, # Dependant Variables
+                "target_field": "whitelist_prediction", #Independant Variable
             }
         }
     ],
@@ -107,3 +107,7 @@ output {
   }
 }
 ```
+
+### Index
+
+An Inference Processor is part of the Elasticsearch ingest pipeline that allows you to use pre-trained Ml Models to enrich data during indexing. So it'll apply the ML Model to incoming documents and add the model's prediction results as new fields in the documents before they are stored in an Elastic index.
