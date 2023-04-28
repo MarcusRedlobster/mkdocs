@@ -10,6 +10,96 @@ Welcome to the Elastic ML Whitelist Guide! This guide will walk you through crea
 
 Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using `pickle`).
 
+#### Imports
+```python
+import pandas as pd
+import numpy as np 
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+import hashlib
+from sklearn.inspection import permutation_importance
+
+```
+
+#### Cleaning of Data
+
+```python
+
+# !--CLEANING OF data--!
+
+def remove_hyphens_from_csv(file_name):
+# Read the CSV file
+    train = pd.read_csv(file_name)
+
+# Iterate through each column and remove hyphens
+for column in train.columns:
+    train[column] = train[column].astype(str).str.replace('-', '')
+
+# Save the modified train to a new CSV file
+train.to_csv('clean.csv', index=False)
+
+```
+
+```python
+# !--Feature Encoding--!
+
+# Read data
+df = pd.read_csv('clean.csv')
+
+# function that takes a row and hashes each value with the column name
+def hash_row_values(row):
+    return [hash(f"{col}_{value}") for col, value in zip(row.index, row) if col != 'whitelist']
+
+# Apply the hash function to each column
+for col in df.columns:
+    if col != 'whitelist':
+        df[col + '_hash'] = df.apply(lambda row: hash(f"{col}_{row[col]}"), axis=1)
+
+```
+
+```python
+# !--Model Training--!
+
+# Independant Variables
+X = df[['Features']]
+
+#Dependant Variable
+y = df[['What is being predicted']]
+```
+```python
+# Train Test Split
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+```
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+Rmodel = RandomForestClassifier(n_estimators=100)
+
+Rmodel.fit(X_train, y_train)
+
+y_pred = Rmodel.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+print("Accuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 Score:", f1)
+
+Accuracy: 0.9726027397260274
+Precision: 0.9523809523809523
+Recall: 0.9523809523809523
+F1 Score: 0.9523809523809523
+```
+
 ### 2. Import the Model into Elasticsearch
 
 ```python
@@ -21,9 +111,9 @@ es_client = Elasticsearch("http://localhost:9200")
 
 ```
 
-Replace 'path/to/trained_model.pkl' with the path to saved model file
+```python
+# Replace 'path/to/trained_model.pkl' with the path to saved model file
 
-```
 with open("path/to/trained_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
