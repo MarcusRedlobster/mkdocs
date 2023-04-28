@@ -1,6 +1,6 @@
 # Elastic ML Whitelist Guide
 
-Welcome to the Elastic ML Whitelist Guide! This guide will walk you through using a trained machine learning model to predict whether alerts in Elastic should be whitelisted or not.
+Welcome to the Elastic ML Whitelist Guide! This guide will walk you through creating and using a trained machine learning model to predict whether alerts in Elastic should be whitelisted or not.
 
 ![Machine Learning](images/Elastic Rule Exception Machine Learning Model Workflow (3).png)
 
@@ -8,7 +8,7 @@ Welcome to the Elastic ML Whitelist Guide! This guide will walk you through usin
 
 ### 1. Train the Model Locally
 
-Train a machine learning model using your historical Elastic data. You can export the data from Elasticsearch to a CSV or JSON file and preprocess it as needed before training the model. Save the trained model to a file (e.g., using `pickle`).
+Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using `pickle`).
 
 ### 2. Import the Model into Elasticsearch
 
@@ -65,7 +65,7 @@ new_pipeline_body = {
     "processors": [
         {
             "conditional": {
-                "if": "ctx.whitelist_prediction.class_name == 'whitelisted'",
+                "if": "ctx.whitelist_prediction.class_name == '1'",
                 "processors": [
                     {
                         "index": {
@@ -89,7 +89,7 @@ es_client.ingest.put_pipeline(id=new_pipeline_id, body=new_pipeline_body)
 filebeat.inputs:
 - type: log
   paths:
-    - /path/to/your/alert/logs/*.log
+    - /path/to/alert/logs/*.log
   fields:
     pipeline: "route-to-whitelisted-index"
 
@@ -102,11 +102,19 @@ output.elasticsearch:
 output {
   elasticsearch {
     hosts => ["http://localhost:9200"]
-    index => "your-siem-index"
+    index => "siem-index"
     pipeline => "route-to-whitelisted-index"
   }
 }
 ```
+
+### Reference Links
+
+https://eland.readthedocs.io/en/v8.3.0/reference/api/eland.ml.MLModel.import_model.html
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest.html
+
+https://www.elastic.co/guide/en/elasticsearch/client/eland/current/overview.html
 
 ### Index
 
