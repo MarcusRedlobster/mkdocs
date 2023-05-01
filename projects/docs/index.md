@@ -130,21 +130,40 @@ ed.ml.import_model(es_client, model, model_id)
 pipeline_id = "whitelist-prediction-pipeline"
 
 pipeline_body = {
-    "description": "Pipeline to predict if an alert should be whitelisted",
-    "processors": [ 
-        {
-            "inference": {
-                "model_id": model_id,
-                "inference_config": {"classification": {}},
-                "field_map": {}, # Dependant Variables
-                "target_field": "whitelist_prediction", #Independant Variable
-            }
-        }
-    ],
+   "description": "Pipeline to predict if an alert should be whitelisted",
+   "processors": [
+       {
+           "script": {
+               "lang": "painless",
+               "source": """
+                 // custom script to apply feature encoding
+                 def hash_value(col, value) {
+                   return Integer.toUnsignedLong((col + '_' + value).hashCode());
+                 }
+
+                 // Apply hashing to each field that has importance
+                 ctx['field1_hash'] = hash_value('field1', ctx['field1']);
+                 ctx['field2_hash'] = hash_value('field2', ctx['field2']);
+                 // ... Add similar lines for all the other fields
+               """
+           }
+       },
+       {
+           "inference": {
+               "model_id": model_id,
+               "inference_config": {"classification": {}},
+               "field_map": { # Dependant Variables
+                   "field1": "field1_hash",
+                   "field2": "field2_hash",
+                   # ... Map the other fields as needed
+               },
+               "target_field": "whitelist_prediction", #Independant Variable
+           }
+       },
+   ],
 }
 
 es_client.ingest.put_pipeline(id=pipeline_id, body=pipeline_body)
-
 ```
 
 ### 4. Create a New Pipeline to Route Whitelisted Alerts to a New Index
@@ -153,21 +172,21 @@ whitelisted_alerts_index = "whitelisted-alerts"
 new_pipeline_id = "route-to-whitelisted-index"
 
 new_pipeline_body = {
-    "description": "Pipeline to route whitelisted alerts to a new index",
-    "processors": [
-        {
-            "conditional": {
-                "if": "ctx.whitelist_prediction.class_name == '1'",
-                "processors": [
-                    {
-                        "index": {
-                            "index": whitelisted_alerts_index,
-                        }
-                    }
-                ],
-            }
-        },
-    ],
+   "description": "Pipeline to route whitelisted alerts to a new index",
+   "processors": [
+       {
+           "conditional": {
+               "if": "ctx.whitelist_prediction.class_name == '1'",
+               "processors": [
+                   {
+                       "index": {
+                           "index": whitelisted_alerts_index,
+                       }
+                   }
+               ],
+           }
+       },
+   ],
 }
 
 es_client.ingest.put_pipeline(id=new_pipeline_id, body=new_pipeline_body)
