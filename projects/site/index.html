@@ -535,17 +535,37 @@
 <div class="highlight"><pre><span></span><code>pipeline_id = &quot;whitelist-prediction-pipeline&quot;
 
 pipeline_body = {
-    &quot;description&quot;: &quot;Pipeline to predict if an alert should be whitelisted&quot;,
-    &quot;processors&quot;: [ 
-        {
-            &quot;inference&quot;: {
-                &quot;model_id&quot;: model_id,
-                &quot;inference_config&quot;: {&quot;classification&quot;: {}},
-                &quot;field_map&quot;: {}, # Dependant Variables
-                &quot;target_field&quot;: &quot;whitelist_prediction&quot;, #Independant Variable
-            }
-        }
-    ],
+   &quot;description&quot;: &quot;Pipeline to predict if an alert should be whitelisted&quot;,
+   &quot;processors&quot;: [
+       {
+           &quot;script&quot;: {
+               &quot;lang&quot;: &quot;painless&quot;,
+               &quot;source&quot;: &quot;&quot;&quot;
+                 // custom script to apply feature encoding
+                 def hash_value(col, value) {
+                   return Integer.toUnsignedLong((col + &#39;_&#39; + value).hashCode());
+                 }
+
+                 // Apply hashing to each field that has importance
+                 ctx[&#39;field1_hash&#39;] = hash_value(&#39;field1&#39;, ctx[&#39;field1&#39;]);
+                 ctx[&#39;field2_hash&#39;] = hash_value(&#39;field2&#39;, ctx[&#39;field2&#39;]);
+                 // ... Add similar lines for all the other fields
+               &quot;&quot;&quot;
+           }
+       },
+       {
+           &quot;inference&quot;: {
+               &quot;model_id&quot;: model_id,
+               &quot;inference_config&quot;: {&quot;classification&quot;: {}},
+               &quot;field_map&quot;: { # Dependant Variables
+                   &quot;field1&quot;: &quot;field1_hash&quot;,
+                   &quot;field2&quot;: &quot;field2_hash&quot;,
+                   # ... Map the other fields as needed
+               },
+               &quot;target_field&quot;: &quot;whitelist_prediction&quot;, #Independant Variable
+           }
+       },
+   ],
 }
 
 es_client.ingest.put_pipeline(id=pipeline_id, body=pipeline_body)
@@ -555,21 +575,21 @@ es_client.ingest.put_pipeline(id=pipeline_id, body=pipeline_body)
 new_pipeline_id = &quot;route-to-whitelisted-index&quot;
 
 new_pipeline_body = {
-    &quot;description&quot;: &quot;Pipeline to route whitelisted alerts to a new index&quot;,
-    &quot;processors&quot;: [
-        {
-            &quot;conditional&quot;: {
-                &quot;if&quot;: &quot;ctx.whitelist_prediction.class_name == &#39;1&#39;&quot;,
-                &quot;processors&quot;: [
-                    {
-                        &quot;index&quot;: {
-                            &quot;index&quot;: whitelisted_alerts_index,
-                        }
-                    }
-                ],
-            }
-        },
-    ],
+   &quot;description&quot;: &quot;Pipeline to route whitelisted alerts to a new index&quot;,
+   &quot;processors&quot;: [
+       {
+           &quot;conditional&quot;: {
+               &quot;if&quot;: &quot;ctx.whitelist_prediction.class_name == &#39;1&#39;&quot;,
+               &quot;processors&quot;: [
+                   {
+                       &quot;index&quot;: {
+                           &quot;index&quot;: whitelisted_alerts_index,
+                       }
+                   }
+               ],
+           }
+       },
+   ],
 }
 
 es_client.ingest.put_pipeline(id=new_pipeline_id, body=new_pipeline_body)
