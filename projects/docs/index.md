@@ -6,28 +6,6 @@ Welcome to the Elastic ML Whitelist Guide! This guide will walk you through crea
 
 ## Steps
 
-### 1. Collect Data
-
-```python
-import eland as ed
-from elasticsearch import Elasticsearch
-
-es = Elasticsearch(
-hosts=[http://localhost:9200/],
-api_key=('api_id', 'api_key'))
-
-```
-
-```python
-# Creating DataFrame from data stored in Elastic Search
-ed_df = ed.DataFrame(es, es_index_pattern="Elastic Index Name")
-# Showing first 300 rows of data and saving it into a variable
-subset_df = ed_df.head(300)
-# Conversion to Pandas DataFrame
-pd_df = subset_df.to_pandas()
-# Storing Data into a CSV
-pd_df.to_csv("index.csv", index=False)
-```
 ### 2. Train the Model Locally
 
 Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using `pickle`).
@@ -42,7 +20,28 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 import hashlib
 from sklearn.inspection import permutation_importance
+import eland as ed
+from elasticsearch import Elasticsearch
 
+```
+#### Collecting Data
+```python
+# Collect to Elastic Search
+es = Elasticsearch(
+hosts=[http://localhost:9200/],
+api_key=('api_id', 'api_key'))
+
+```
+
+```python
+# Creating DataFrame from data stored in Elastic Search
+ed_df = ed.DataFrame(es, es_index_pattern="Elastic Index Name")
+# Showing first 300 rows of data and saving it into a variable
+subset_df = ed_df.head(300)
+# Converting that Data into a Pandas DataFrame
+pd_df = subset_df.to_pandas()
+# Storing Data into a CSV
+pd_df.to_csv("index.csv", index=False)
 ```
 
 #### Cleaning of Data
