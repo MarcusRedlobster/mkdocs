@@ -228,16 +228,23 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-train-the-model-locally" class="md-nav__link">
-    1. Train the Model Locally
+  <a href="#2-train-the-model-locally" class="md-nav__link">
+    2. Train the Model Locally
   </a>
   
-    <nav class="md-nav" aria-label="1. Train the Model Locally">
+    <nav class="md-nav" aria-label="2. Train the Model Locally">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#imports" class="md-nav__link">
     Imports
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collecting-data" class="md-nav__link">
+    Collecting Data
   </a>
   
 </li>
@@ -269,8 +276,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-import-the-model-into-elasticsearch" class="md-nav__link">
-    2. Import the Model into Elasticsearch
+  <a href="#3-import-the-model-into-elasticsearch" class="md-nav__link">
+    3. Import the Model into Elasticsearch
   </a>
   
 </li>
@@ -283,22 +290,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor" class="md-nav__link">
-    3. Create an Elasticsearch Ingest Pipeline with the Inference Processor
+  <a href="#4-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor" class="md-nav__link">
+    4. Create an Elasticsearch Ingest Pipeline with the Inference Processor
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-create-a-new-pipeline-to-route-whitelisted-alerts-to-a-new-index" class="md-nav__link">
-    4. Create a New Pipeline to Route Whitelisted Alerts to a New Index
+  <a href="#5-create-a-new-pipeline-to-route-whitelisted-alerts-to-a-new-index" class="md-nav__link">
+    5. Create a New Pipeline to Route Whitelisted Alerts to a New Index
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-configure-filebeat-or-logstash-to-use-the-new-pipeline" class="md-nav__link">
-    5. Configure Filebeat or Logstash to Use the New Pipeline
+  <a href="#6-configure-filebeat-or-logstash-to-use-the-new-pipeline" class="md-nav__link">
+    6. Configure Filebeat or Logstash to Use the New Pipeline
   </a>
   
 </li>
@@ -351,16 +358,23 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-train-the-model-locally" class="md-nav__link">
-    1. Train the Model Locally
+  <a href="#2-train-the-model-locally" class="md-nav__link">
+    2. Train the Model Locally
   </a>
   
-    <nav class="md-nav" aria-label="1. Train the Model Locally">
+    <nav class="md-nav" aria-label="2. Train the Model Locally">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#imports" class="md-nav__link">
     Imports
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collecting-data" class="md-nav__link">
+    Collecting Data
   </a>
   
 </li>
@@ -392,8 +406,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-import-the-model-into-elasticsearch" class="md-nav__link">
-    2. Import the Model into Elasticsearch
+  <a href="#3-import-the-model-into-elasticsearch" class="md-nav__link">
+    3. Import the Model into Elasticsearch
   </a>
   
 </li>
@@ -406,22 +420,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor" class="md-nav__link">
-    3. Create an Elasticsearch Ingest Pipeline with the Inference Processor
+  <a href="#4-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor" class="md-nav__link">
+    4. Create an Elasticsearch Ingest Pipeline with the Inference Processor
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-create-a-new-pipeline-to-route-whitelisted-alerts-to-a-new-index" class="md-nav__link">
-    4. Create a New Pipeline to Route Whitelisted Alerts to a New Index
+  <a href="#5-create-a-new-pipeline-to-route-whitelisted-alerts-to-a-new-index" class="md-nav__link">
+    5. Create a New Pipeline to Route Whitelisted Alerts to a New Index
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-configure-filebeat-or-logstash-to-use-the-new-pipeline" class="md-nav__link">
-    5. Configure Filebeat or Logstash to Use the New Pipeline
+  <a href="#6-configure-filebeat-or-logstash-to-use-the-new-pipeline" class="md-nav__link">
+    6. Configure Filebeat or Logstash to Use the New Pipeline
   </a>
   
 </li>
@@ -450,7 +464,7 @@
 <p>Welcome to the Elastic ML Whitelist Guide! This guide will walk you through creating and using a trained machine learning model to predict whether alerts in Elastic should be whitelisted or not.</p>
 <p><img alt="Machine Learning" src="images/Elastic%20Rule%20Exception%20Machine%20Learning%20Model%20Workflow%20%283%29.png" /></p>
 <h2 id="steps">Steps</h2>
-<h3 id="1-train-the-model-locally">1. Train the Model Locally</h3>
+<h3 id="2-train-the-model-locally">2. Train the Model Locally</h3>
 <p>Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using <code>pickle</code>).</p>
 <h4 id="imports">Imports</h4>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -461,6 +475,23 @@
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">from</span> <span class="nn">sklearn.inspection</span> <span class="kn">import</span> <span class="n">permutation_importance</span>
+<span class="kn">import</span> <span class="nn">eland</span> <span class="k">as</span> <span class="nn">ed</span>
+<span class="kn">from</span> <span class="nn">elasticsearch</span> <span class="kn">import</span> <span class="n">Elasticsearch</span>
+</code></pre></div>
+<h4 id="collecting-data">Collecting Data</h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># Collect to Elastic Search</span>
+<span class="n">es</span> <span class="o">=</span> <span class="n">Elasticsearch</span><span class="p">(</span>
+<span class="n">hosts</span><span class="o">=</span><span class="p">[</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">9200</span><span class="o">/</span><span class="p">],</span>
+<span class="n">api_key</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;api_id&#39;</span><span class="p">,</span> <span class="s1">&#39;api_key&#39;</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Creating DataFrame from data stored in Elastic Search</span>
+<span class="n">ed_df</span> <span class="o">=</span> <span class="n">ed</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">es_index_pattern</span><span class="o">=</span><span class="s2">&quot;Elastic Index Name&quot;</span><span class="p">)</span>
+<span class="c1"># Showing first 300 rows of data and saving it into a variable</span>
+<span class="n">subset_df</span> <span class="o">=</span> <span class="n">ed_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+<span class="c1"># Converting that Data into a Pandas DataFrame</span>
+<span class="n">pd_df</span> <span class="o">=</span> <span class="n">subset_df</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="c1"># Storing Data into a CSV</span>
+<span class="n">pd_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;index.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="cleaning-of-data">Cleaning of Data</h4>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_hyphens_from_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
@@ -530,7 +561,7 @@
 <span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">dump</span>
 <span class="n">dump</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;model.pkl&#39;</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="2-import-the-model-into-elasticsearch">2. Import the Model into Elasticsearch</h3>
+<h3 id="3-import-the-model-into-elasticsearch">3. Import the Model into Elasticsearch</h3>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">eland</span> <span class="k">as</span> <span class="nn">ed</span>
 <span class="kn">from</span> <span class="nn">elasticsearch</span> <span class="kn">import</span> <span class="n">Elasticsearch</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
@@ -546,19 +577,16 @@
 <span class="n">ed</span><span class="o">.</span><span class="n">ml</span><span class="o">.</span><span class="n">import_model</span><span class="p">(</span><span class="n">es_client</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">model_id</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="or">OR</h3>
-<div class="highlight"><pre><span></span><code>import eland as ed
+<div class="highlight"><pre><span></span><code>from eland.ml import MLModel
 
-model_id = &quot;your_imported_model_id&quot;
-model_file_path = &quot;/path/to/your/model_file&quot;
-
-ed.ml.MLModel.import_model(
-   es_client=ed.Elasticsearch(),
-   model_id=model_id,
-   model_file=model_file_path,
-   field_map={&quot;field1&quot;: &quot;field1_hash&quot;, &quot;field2&quot;: &quot;field2_hash&quot;, ...}
+&gt;&gt;&gt; es_model = MLModel.import_model(
+    es_client=&quot;http://localhost:9200&quot;,
+    model_id=&quot;xgb-classifier&quot;,
+    model=xgb_model,
+    feature_names=[&quot;f0&quot;, &quot;f1&quot;, &quot;f2&quot;, &quot;f3&quot;, &quot;f4&quot;],
 )
 </code></pre></div>
-<h3 id="3-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor">3. Create an Elasticsearch Ingest Pipeline with the Inference Processor</h3>
+<h3 id="4-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor">4. Create an Elasticsearch Ingest Pipeline with the Inference Processor</h3>
 <div class="highlight"><pre><span></span><code>pipeline_id = &quot;whitelist-prediction-pipeline&quot;
 
 pipeline_body = {
@@ -597,7 +625,7 @@ pipeline_body = {
 
 es_client.ingest.put_pipeline(id=pipeline_id, body=pipeline_body)
 </code></pre></div>
-<h3 id="4-create-a-new-pipeline-to-route-whitelisted-alerts-to-a-new-index">4. Create a New Pipeline to Route Whitelisted Alerts to a New Index</h3>
+<h3 id="5-create-a-new-pipeline-to-route-whitelisted-alerts-to-a-new-index">5. Create a New Pipeline to Route Whitelisted Alerts to a New Index</h3>
 <div class="highlight"><pre><span></span><code>whitelisted_alerts_index = &quot;whitelisted-alerts&quot;
 new_pipeline_id = &quot;route-to-whitelisted-index&quot;
 
@@ -621,7 +649,7 @@ new_pipeline_body = {
 
 es_client.ingest.put_pipeline(id=new_pipeline_id, body=new_pipeline_body)
 </code></pre></div>
-<h3 id="5-configure-filebeat-or-logstash-to-use-the-new-pipeline">5. Configure Filebeat or Logstash to Use the New Pipeline</h3>
+<h3 id="6-configure-filebeat-or-logstash-to-use-the-new-pipeline">6. Configure Filebeat or Logstash to Use the New Pipeline</h3>
 <h1 id="filebeatyml">filebeat.yml</h1>
 <div class="highlight"><pre><span></span><code>filebeat.inputs:
 - type: log

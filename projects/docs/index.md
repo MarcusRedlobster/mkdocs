@@ -6,9 +6,9 @@ Welcome to the Elastic ML Whitelist Guide! This guide will walk you through crea
 
 ## Steps
 
-### 2. Train the Model Locally
+### 1. Train the Model Locally
 
-Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using `pickle`).
+Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using `pickle`). As the diagrams shows, we will be 
 
 #### Imports
 ```python
@@ -57,7 +57,6 @@ for column in df.columns:
 
 # Save the modified df to a new CSV file
 df.to_csv('clean.csv', index=False)
-
 ```
 #### Feature Encoding
 ```python
@@ -74,6 +73,8 @@ for col in df.columns:
         df[col + '_hash'] = df.apply(lambda row: hash(f"{col}_{row[col]}"), axis=1)
 
 ```
+After collecting, cleaning, and feature encoding the data, you want to create a new column entitled "whitelist", and then you want to manually label each row in the dataset under that column either 0 or 1. 1 being whitelist and 0 being do not whitelist. In order to accuratly label these rows correctly you will manually have to analyze and research each alert row by row and decide whether this alert should be whitelisted or not, this will result in the best performance of the model.
+
 #### Model Training
 ```python
 # Independant Variables
@@ -132,9 +133,6 @@ import pickle
 
 es_client = Elasticsearch("http://localhost:9200") 
 
-```
-
-```python
 # Replace 'path/to/trained_model.pkl' with the path to saved model file
 
 with open("path/to/trained_model.pkl", "rb") as model_file:
@@ -144,7 +142,7 @@ model_id = "imported-model-id"
 ed.ml.import_model(es_client, model, model_id)
 ```
 ### OR
-```pythons
+```python
 from eland.ml import MLModel
 
 >>> es_model = MLModel.import_model(
