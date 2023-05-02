@@ -6,7 +6,29 @@ Welcome to the Elastic ML Whitelist Guide! This guide will walk you through crea
 
 ## Steps
 
-### 1. Train the Model Locally
+### 1. Collect Data
+
+```python
+import eland as ed
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(
+hosts=[http://localhost:9200/],
+api_key=('api_id', 'api_key'))
+
+```
+
+```python
+# Creating DataFrame from data stored in Elastic Search
+ed_df = ed.DataFrame(es, es_index_pattern="Elastic Index Name")
+# Showing first 300 rows of data and saving it into a variable
+subset_df = ed_df.head(300)
+# Conversion to Pandas DataFrame
+pd_df = subset_df.to_pandas()
+# Storing Data into a CSV
+pd_df.to_csv("index.csv", index=False)
+```
+### 2. Train the Model Locally
 
 Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using `pickle`).
 
@@ -102,7 +124,7 @@ from joblib import dump
 dump(model, 'model.pkl')
 ```
 
-### 2. Import the Model into Elasticsearch
+### 3. Import the Model into Elasticsearch
 
 ```python
 import eland as ed
@@ -135,7 +157,7 @@ from eland.ml import MLModel
 
 ```
 
-### 3. Create an Elasticsearch Ingest Pipeline with the Inference Processor
+### 4. Create an Elasticsearch Ingest Pipeline with the Inference Processor
 
 ```
 pipeline_id = "whitelist-prediction-pipeline"
@@ -177,7 +199,7 @@ pipeline_body = {
 es_client.ingest.put_pipeline(id=pipeline_id, body=pipeline_body)
 ```
 
-### 4. Create a New Pipeline to Route Whitelisted Alerts to a New Index
+### 5. Create a New Pipeline to Route Whitelisted Alerts to a New Index
 ```
 whitelisted_alerts_index = "whitelisted-alerts"
 new_pipeline_id = "route-to-whitelisted-index"
@@ -204,7 +226,7 @@ es_client.ingest.put_pipeline(id=new_pipeline_id, body=new_pipeline_body)
 
 ```
 
-### 5. Configure Filebeat or Logstash to Use the New Pipeline
+### 6. Configure Filebeat or Logstash to Use the New Pipeline
 
 # filebeat.yml
 ```
