@@ -276,6 +276,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#or" class="md-nav__link">
+    OR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#3-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor" class="md-nav__link">
     3. Create an Elasticsearch Ingest Pipeline with the Inference Processor
   </a>
@@ -387,6 +394,13 @@
           <li class="md-nav__item">
   <a href="#2-import-the-model-into-elasticsearch" class="md-nav__link">
     2. Import the Model into Elasticsearch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#or" class="md-nav__link">
+    OR
   </a>
   
 </li>
@@ -531,6 +545,19 @@
 <span class="n">model_id</span> <span class="o">=</span> <span class="s2">&quot;imported-model-id&quot;</span>
 <span class="n">ed</span><span class="o">.</span><span class="n">ml</span><span class="o">.</span><span class="n">import_model</span><span class="p">(</span><span class="n">es_client</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">model_id</span><span class="p">)</span>
 </code></pre></div>
+<h3 id="or">OR</h3>
+<div class="highlight"><pre><span></span><code>import eland as ed
+
+model_id = &quot;your_imported_model_id&quot;
+model_file_path = &quot;/path/to/your/model_file&quot;
+
+ed.ml.MLModel.import_model(
+   es_client=ed.Elasticsearch(),
+   model_id=model_id,
+   model_file=model_file_path,
+   field_map={&quot;field1&quot;: &quot;field1_hash&quot;, &quot;field2&quot;: &quot;field2_hash&quot;, ...}
+)
+</code></pre></div>
 <h3 id="3-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor">3. Create an Elasticsearch Ingest Pipeline with the Inference Processor</h3>
 <div class="highlight"><pre><span></span><code>pipeline_id = &quot;whitelist-prediction-pipeline&quot;
 
@@ -622,6 +649,7 @@ output.elasticsearch:
 <p>https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest.html</p>
 <p>https://www.elastic.co/guide/en/elasticsearch/client/eland/current/overview.html</p>
 <p>https://www.youtube.com/watch?v=w8RwRO8gI_s&amp;pp=ygUNZWxhbmQgZWxhc3RpYw%3D%3D</p>
+<p>https://www.youtube.com/watch?v=U8fnkzp_sfo</p>
 <h3 id="terms">Terms</h3>
 <h5 id="an-inference-processor-is-part-of-the-elasticsearch-ingest-pipeline-that-allows-you-to-use-pre-trained-ml-models-to-enrich-data-during-indexing-so-itll-apply-the-ml-model-to-incoming-documents-and-add-the-models-prediction-results-as-new-fields-in-the-documents-before-they-are-stored-in-an-elastic-index">An Inference Processor: is part of the Elasticsearch ingest pipeline that allows you to use pre-trained Ml Models to enrich data during indexing. So it'll apply the ML Model to incoming documents and add the model's prediction results as new fields in the documents before they are stored in an Elastic index.</h5>
 <h5 id="feature-encoding-feature-encoding-is-the-process-of-converting-non-numeric-data-types-eg-categorical-or-textual-data-into-a-numerical-format-that-can-be-used-by-machine-learning-algorithms-many-machine-learning-algorithms-require-input-data-to-be-in-a-numerical-format-so-feature-encoding-is-a-critical-pre-processing-step-when-working-with-non-numeric-features">Feature Encoding: Feature encoding is the process of converting non-numeric data types (e.g., categorical or textual data) into a numerical format that can be used by machine learning algorithms. Many machine learning algorithms require input data to be in a numerical format, so feature encoding is a critical pre-processing step when working with non-numeric features.</h5>
