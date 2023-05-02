@@ -121,6 +121,17 @@ with open("path/to/trained_model.pkl", "rb") as model_file:
 
 model_id = "imported-model-id"
 ed.ml.import_model(es_client, model, model_id)
+```
+### OR
+```pythons
+from eland.ml import MLModel
+
+>>> es_model = MLModel.import_model(
+    es_client="http://localhost:9200",
+    model_id="xgb-classifier",
+    model=xgb_model,
+    feature_names=["f0", "f1", "f2", "f3", "f4"],
+)
 
 ```
 
