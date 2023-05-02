@@ -26,7 +26,7 @@ from elasticsearch import Elasticsearch
 ```
 #### Collecting Data
 ```python
-# Collect to Elastic Search
+# Connect to Elastic Search
 es = Elasticsearch(
 hosts=[http://localhost:9200/],
 api_key=('api_id', 'api_key'))

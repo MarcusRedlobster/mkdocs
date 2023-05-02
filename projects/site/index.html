@@ -228,11 +228,11 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#2-train-the-model-locally" class="md-nav__link">
-    2. Train the Model Locally
+  <a href="#1-train-the-model-locally" class="md-nav__link">
+    1. Train the Model Locally
   </a>
   
-    <nav class="md-nav" aria-label="2. Train the Model Locally">
+    <nav class="md-nav" aria-label="1. Train the Model Locally">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -358,11 +358,11 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#2-train-the-model-locally" class="md-nav__link">
-    2. Train the Model Locally
+  <a href="#1-train-the-model-locally" class="md-nav__link">
+    1. Train the Model Locally
   </a>
   
-    <nav class="md-nav" aria-label="2. Train the Model Locally">
+    <nav class="md-nav" aria-label="1. Train the Model Locally">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -464,8 +464,8 @@
 <p>Welcome to the Elastic ML Whitelist Guide! This guide will walk you through creating and using a trained machine learning model to predict whether alerts in Elastic should be whitelisted or not.</p>
 <p><img alt="Machine Learning" src="images/Elastic%20Rule%20Exception%20Machine%20Learning%20Model%20Workflow%20%283%29.png" /></p>
 <h2 id="steps">Steps</h2>
-<h3 id="2-train-the-model-locally">2. Train the Model Locally</h3>
-<p>Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using <code>pickle</code>).</p>
+<h3 id="1-train-the-model-locally">1. Train the Model Locally</h3>
+<p>Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using <code>pickle</code>). As the diagrams shows, we will be </p>
 <h4 id="imports">Imports</h4>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
@@ -506,7 +506,7 @@
 <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;clean.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="feature-encoding">Feature Encoding</h4>
-<div class="highlight"><pre><span></span><code><span class="c1"># Read data</span>
+<p><div class="highlight"><pre><span></span><code><span class="c1"># Read data</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;clean.csv&#39;</span><span class="p">)</span>
 
 <span class="c1"># function that takes a row and hashes each value with the column name</span>
@@ -518,6 +518,7 @@
     <span class="k">if</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;whitelist&#39;</span><span class="p">:</span>
         <span class="n">df</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="s1">&#39;_hash&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="nb">hash</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
+After collecting, cleaning, and feature encoding the data, you want to create a new column entitled "whitelist", and then you want to manually label each row in the dataset under that column either 0 or 1. 1 being whitelist and 0 being do not whitelist. In order to accuratly label these rows correctly you will manually have to analyze and research each alert row by row and decide whether this alert should be whitelisted or not, this will result in the best performance of the model.</p>
 <h4 id="model-training">Model Training</h4>
 <p><div class="highlight"><pre><span></span><code><span class="c1"># Independant Variables</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;Features&#39;</span><span class="p">]]</span>
@@ -567,8 +568,8 @@
 <span class="kn">import</span> <span class="nn">pickle</span>
 
 <span class="n">es_client</span> <span class="o">=</span> <span class="n">Elasticsearch</span><span class="p">(</span><span class="s2">&quot;http://localhost:9200&quot;</span><span class="p">)</span> 
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1"># Replace &#39;path/to/trained_model.pkl&#39; with the path to saved model file</span>
+
+<span class="c1"># Replace &#39;path/to/trained_model.pkl&#39; with the path to saved model file</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;path/to/trained_model.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">model_file</span><span class="p">:</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
@@ -577,14 +578,14 @@
 <span class="n">ed</span><span class="o">.</span><span class="n">ml</span><span class="o">.</span><span class="n">import_model</span><span class="p">(</span><span class="n">es_client</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">model_id</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="or">OR</h3>
-<div class="highlight"><pre><span></span><code>from eland.ml import MLModel
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">eland.ml</span> <span class="kn">import</span> <span class="n">MLModel</span>
 
-&gt;&gt;&gt; es_model = MLModel.import_model(
-    es_client=&quot;http://localhost:9200&quot;,
-    model_id=&quot;xgb-classifier&quot;,
-    model=xgb_model,
-    feature_names=[&quot;f0&quot;, &quot;f1&quot;, &quot;f2&quot;, &quot;f3&quot;, &quot;f4&quot;],
-)
+<span class="o">&gt;&gt;&gt;</span> <span class="n">es_model</span> <span class="o">=</span> <span class="n">MLModel</span><span class="o">.</span><span class="n">import_model</span><span class="p">(</span>
+    <span class="n">es_client</span><span class="o">=</span><span class="s2">&quot;http://localhost:9200&quot;</span><span class="p">,</span>
+    <span class="n">model_id</span><span class="o">=</span><span class="s2">&quot;xgb-classifier&quot;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">xgb_model</span><span class="p">,</span>
+    <span class="n">feature_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;f0&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;f2&quot;</span><span class="p">,</span> <span class="s2">&quot;f3&quot;</span><span class="p">,</span> <span class="s2">&quot;f4&quot;</span><span class="p">],</span>
+<span class="p">)</span>
 </code></pre></div>
 <h3 id="4-create-an-elasticsearch-ingest-pipeline-with-the-inference-processor">4. Create an Elasticsearch Ingest Pipeline with the Inference Processor</h3>
 <div class="highlight"><pre><span></span><code>pipeline_id = &quot;whitelist-prediction-pipeline&quot;
