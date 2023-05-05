@@ -1,4 +1,4 @@
-site_name: 'Red Lobster Projects'
+site_name: 'Projects'
 nav:
   - Elastic ML Whitelist Project: index.md
 theme:
