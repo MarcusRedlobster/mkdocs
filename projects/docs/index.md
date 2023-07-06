@@ -1,4 +1,4 @@
-# Elastic ML Whitelist Guide
+# Elastic Machine Learning Whitelist Guide
 
 Welcome to the Elastic Machine Learning Whitelist Guide! This guide will walk you through creating and using a trained machine learning model to predict whether alerts in Elastic should be whitelisted or not.
 
@@ -82,6 +82,8 @@ result.to_csv('siem.csv', index=False, header=True)
 To import our data into elastic **Click on the hamburger icon at the top left of the screen> Then on Machine Learning> and then on File> Import the appropriate csv file that was concatenated and cleaned.** Now that we have our data ready to go, lets train our model. **Click on the hamburger icon at the top left of the screen> Under Analytics click on Machine Learning> Under Data Frame Analytics click on Jobs> Then click Create job** As we create our ML mode make sure to set "Feature Importance Values to the amount of features we have.
 
 ### Elastic Pipeline
+
+Now that we have our model created we can now create the pipeline that will run our model againts our elastic siem logs. See code below, you can copy and paste the code in the Elastic Dev Console (Make sure to configure Pipeline Name, Description, Mode ID, and Field Map)
 
 ```
 PUT _ingest/pipeline/ml-mitre-ta0002-execution-pipeline 
