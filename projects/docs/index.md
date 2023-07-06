@@ -28,7 +28,7 @@ processed_words = "\n".join([f"'{word}'," for word in words])
 print(processed_words)
 
 ```
-Now that we have the features we want our model to be trained with lets concatenate those csv files we previously downloaded and then remove every column that is not in our feature lits.
+Now that we have the features we want our model to be trained with lets concatenate those csv files we previously downloaded (make sure to rename these files accordingly e.g. file1.csv, file2.csv, file3.csv) and then remove every column that is not in our feature list.
 
 ```python
 import pandas as pd
