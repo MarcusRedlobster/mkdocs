@@ -1,278 +1,82 @@
 # Elastic ML Whitelist Guide
 
-Welcome to the Elastic ML Whitelist Guide! This guide will walk you through creating and using a trained machine learning model to predict whether alerts in Elastic should be whitelisted or not.
+Welcome to the Elastic Machine Learning Whitelist Guide! This guide will walk you through creating and using a trained machine learning model to predict whether alerts in Elastic should be whitelisted or not.
 
 ![Machine Learning](images/Elastic Rule Exception Machine Learning Model Workflow (3).png)
 
 ## Steps
 
-### 1. Train the Model Locally
+### Get the data
 
-Train a machine learning model using historical Elastic data. Preprocess data as needed before training the model. Save the trained model to a file (e.g., using `pickle`). As the diagrams shows, we will be 
+The first step to training a machine learning model is to get the data that you need, for this specific project we will download the data that we need from Elastic. We can do that by going to **Elastic> Click on the hamburger icon at the top left of the screen> Under the Analytics section click on Discover.**
 
-#### Imports
+Now that we are on the Discover page we need to switch our index to our siem index after this, we can then begin to download the necessary data, first lets select a date by clicking on the time picker then, we can click on **Share** at the top right of the screen, and click **CSV Reports> Generate CSV**. We want to download as much data as we need and we can do so by repeating the steps above as there is a limit on how much data you can download at once.
+
+### Getting the data ready: Transform & Clean
+
+Now that we have our data we want to get our data ready for training, we are going to need to concatenate all those csv files that we previously downloaded and then we want to clean up the data a bit, here is how we do that.
+
+This code will request the list of features you would like your model to have and, put those features in parenthesis and add a comma at the end of each feature so that you can easily copy and paste the text into the code below.
+```python
+
+words_input = input("Please paste the list of words: ")
+
+words = words_input.split()
+
+processed_words = "\n".join([f"'{word}'," for word in words])
+
+print(processed_words)
+
+```
+Now that we have the features we want our model to be trained with lets concatenate those csv files we previously downloaded and then remove every column that is not in our feature lits.
+
 ```python
 import pandas as pd
-import numpy as np 
-%matplotlib inline
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.model_selection import train_test_split
-import hashlib
-from sklearn.inspection import permutation_importance
-import eland as ed
-from elasticsearch import Elasticsearch
+import numpy as np
 
-```
-#### Collecting Data
-```python
-# Connect to Elastic Search
-es = Elasticsearch(
-hosts=[http://localhost:9200/],
-api_key=('api_id', 'api_key'))
+files = ['file1.csv', 'file2.csv', 'file3.csv', 'file4.csv', 'file5.csv', 'file6.csv', 'file7.csv', 'file8.csv']
 
-```
+dfs = []
+for f in files:
+    df = pd.read_csv(f, on_bad_lines='warn')
+    print(f"File: {f}, Columns: {df.columns.tolist()}")
+    dfs.append(df)
 
-```python
-# Creating DataFrame from data stored in Elastic Search
-ed_df = ed.DataFrame(es, es_index_pattern="Elastic Index Name")
-# Showing first 300 rows of data and saving it into a variable
-subset_df = ed_df.head(300)
-# Converting that Data into a Pandas DataFrame
-pd_df = subset_df.to_pandas()
-# Storing Data into a CSV
-pd_df.to_csv("index.csv", index=False)
-```
+result = pd.concat(dfs, ignore_index=True)
 
-#### Cleaning of Data
+cols_to_keep = [
+    'kibana.alert.rule.name',
+    'user.name',
+    'user.domain',
+    'host.name',
+    'process.name',
+    'event.category',
+    'source.ip',
+    'source.port',
+    'destination.port',
+    'dns.question.name',
+    'dns.question.type',
+    'file.name',
+    'file.path',
+    'dll.name',
+    'dll.path',
+    'process.parent.name',
+    'process.executable',
+    'process.working_directory',
+    'process.args',
+    'process.hash.sha256',
+    'dll.hash.sha256',
+    'signal.reason'
+]
 
-```python
-def remove_hyphens_from_csv(file_name):
-# Read the CSV file
-    df = pd.read_csv(file_name)
+cols_to_keep = [col for col in cols_to_keep if col in result.columns]
 
-# Iterate through each column and remove hyphens
-for column in df.columns:
-    df[column] = df[column].astype(str).str.replace('-', '')
+result = result[cols_to_keep]
 
-# Save the modified df to a new CSV file
-df.to_csv('clean.csv', index=False)
-```
-#### Feature Encoding
-```python
-# Read data
-df = pd.read_csv('clean.csv')
+result = result.replace('-', np.nan)
 
-# function that takes a row and hashes each value with the column name
-def hash_row_values(row):
-    return [hash(f"{col}_{value}") for col, value in zip(row.index, row) if col != 'whitelist']
-
-# Apply the hash function to each column
-for col in df.columns:
-    if col != 'whitelist':
-        df[col + '_hash'] = df.apply(lambda row: hash(f"{col}_{row[col]}"), axis=1)
-
-```
-After collecting, cleaning, and feature encoding the data, you want to create a new column entitled "whitelist", and then you want to manually label each row in the dataset under that column either 0 or 1. 1 being whitelist and 0 being do not whitelist. In order to accuratly label these rows correctly you will manually have to analyze and research each alert row by row and decide whether this alert should be whitelisted or not, this will result in the best performance of the model.
-
-#### Model Training
-```python
-# Independant Variables
-X = df[['Features']]
-
-#Dependant Variable
-y = df[['What is being predicted']]
-```
-```python
-# Train Test Split
-
-from sklearn.model_selection import train_test_split
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-```
-```python
-# !--Random Forest Model--!
-
-from sklearn.ensemble import RandomForestClassifier
-
-Rmodel = RandomForestClassifier(n_estimators=100)
-
-Rmodel.fit(X_train, y_train)
-
-y_pred = Rmodel.predict(X_test)
-
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred)
-recall = recall_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred)
-
-print("Accuracy:", accuracy)
-print("Precision:", precision)
-print("Recall:", recall)
-print("F1 Score:", f1)
-
-Accuracy: 0.9726027397260274
-Precision: 0.9523809523809523
-Recall: 0.9523809523809523
-F1 Score: 0.9523809523809523
+result.to_csv('siem.csv', index=False, header=True)
 ```
 
-```python
-# Convert model into a .pkl file
-
-from joblib import dump
-dump(model, 'model.pkl')
-```
-
-### 3. Import the Model into Elasticsearch
-
-```python
-import eland as ed
-from elasticsearch import Elasticsearch
-import pickle
-
-es_client = Elasticsearch("http://localhost:9200") 
-
-# Replace 'path/to/trained_model.pkl' with the path to saved model file
-
-with open("path/to/trained_model.pkl", "rb") as model_file:
-    model = pickle.load(model_file)
-
-model_id = "imported-model-id"
-ed.ml.import_model(es_client, model, model_id)
-```
-### OR
-```python
-from eland.ml import MLModel
-
->>> es_model = MLModel.import_model(
-    es_client="http://localhost:9200",
-    model_id="xgb-classifier",
-    model=xgb_model,
-    feature_names=["f0", "f1", "f2", "f3", "f4"],
-)
-
-```
-
-### 4. Create an Elasticsearch Ingest Pipeline with the Inference Processor
-
-```
-pipeline_id = "whitelist-prediction-pipeline"
-
-pipeline_body = {
-   "description": "Pipeline to predict if an alert should be whitelisted",
-   "processors": [
-       {
-           "script": {
-               "lang": "painless",
-               "source": """
-                 // custom script to apply feature encoding
-                 def hash_value(col, value) {
-                   return Integer.toUnsignedLong((col + '_' + value).hashCode());
-                 }
-
-                 // Apply hashing to each field that has importance
-                 ctx['field1_hash'] = hash_value('field1', ctx['field1']);
-                 ctx['field2_hash'] = hash_value('field2', ctx['field2']);
-                 // ... Add similar lines for all the other fields
-               """
-           }
-       },
-       {
-           "inference": {
-               "model_id": model_id,
-               "inference_config": {"classification": {}},
-               "field_map": { # Dependant Variables
-                   "field1": "field1_hash",
-                   "field2": "field2_hash",
-                   # ... Map the other fields as needed
-               },
-               "target_field": "whitelist_prediction", #Independant Variable
-           }
-       },
-   ],
-}
-
-es_client.ingest.put_pipeline(id=pipeline_id, body=pipeline_body)
-```
-
-### 5. Create a New Pipeline to Route Whitelisted Alerts to a New Index
-```
-whitelisted_alerts_index = "whitelisted-alerts"
-new_pipeline_id = "route-to-whitelisted-index"
-
-new_pipeline_body = {
-   "description": "Pipeline to route whitelisted alerts to a new index",
-   "processors": [
-       {
-           "conditional": {
-               "if": "ctx.whitelist_prediction.class_name == '1'",
-               "processors": [
-                   {
-                       "index": {
-                           "index": whitelisted_alerts_index,
-                       }
-                   }
-               ],
-           }
-       },
-   ],
-}
-
-es_client.ingest.put_pipeline(id=new_pipeline_id, body=new_pipeline_body)
-
-```
-
-### 6. Configure Filebeat or Logstash to Use the New Pipeline
-
-# filebeat.yml
-```
-filebeat.inputs:
-- type: log
-  paths:
-    - /path/to/alert/logs/*.log
-  fields:
-    pipeline: "route-to-whitelisted-index"
-
-output.elasticsearch:
-  hosts: ["http://localhost:9200"]
-  pipeline: "%{[fields.pipeline]}"
-```
-# logstash.conf
-```
-output {
-  elasticsearch {
-    hosts => ["http://localhost:9200"]
-    index => "siem-index"
-    pipeline => "route-to-whitelisted-index"
-  }
-}
-```
-
-### Reference Links
-
-https://eland.readthedocs.io/en/v8.3.0/reference/api/eland.ml.MLModel.import_model.html
-
-https://eland.readthedocs.io/en/7.9.1a1/examples/introduction_to_eland_webinar.html#Machine-Learning-Demo
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest.html
-
-https://www.elastic.co/guide/en/elasticsearch/client/eland/current/overview.html
-
-https://www.youtube.com/watch?v=w8RwRO8gI_s&pp=ygUNZWxhbmQgZWxhc3RpYw%3D%3D
-
-https://www.youtube.com/watch?v=U8fnkzp_sfo
-
-### Terms
-
-##### An Inference Processor: is part of the Elasticsearch ingest pipeline that allows you to use pre-trained Ml Models to enrich data during indexing. So it'll apply the ML Model to incoming documents and add the model's prediction results as new fields in the documents before they are stored in an Elastic index.
-
-##### Feature Encoding: Feature encoding is the process of converting non-numeric data types (e.g., categorical or textual data) into a numerical format that can be used by machine learning algorithms. Many machine learning algorithms require input data to be in a numerical format, so feature encoding is a critical pre-processing step when working with non-numeric features.
-
-##### Accuracy: Accuracy is a metric used to evaluate the performance of a classification model. It is calculated as the ratio of the number of correct predictions to the total number of predictions made. In other words, it measures how well a model correctly classifies instances in the dataset.
-
-##### Precision: Precision is a measure of the accuracy of positive predictions made by a classification model. It is calculated as the ratio of true positive predictions (correctly identified positive instances) to the sum of true positive and false positive predictions (instances incorrectly identified as positive). High precision indicates that a model is good at avoiding false positives.
-
-##### Recall: Recall, also known as sensitivity or true positive rate, is a measure of a classification model's ability to identify all the relevant instances in the dataset. It is calculated as the ratio of true positive predictions to the sum of true positive and false negative predictions (instances incorrectly identified as negative). High recall indicates that a model is good at identifying positive instances and minimizing false negatives.
-
-##### F1 Score:The F1 Score is a metric that combines precision and recall to provide a single measure of a classification model's performance. It is the harmonic mean of precision and recall and ranges between 0 and 1, with 1 indicating perfect precision and recall. The F1 Score is particularly useful when dealing with imbalanced datasets, where one class is more frequent than the other, as it takes into account both false positives and false negatives. A high F1 Score indicates that the model has a good balance between precision and recall.
+### Elastic Model Trainng
+To import our data into elastic **Click on the hamburger icon at the top left of the screen> Then on Machine Learning> and then on File> Import the appropriate csv file that was concatenated and cleaned.** Now that we have our data ready to go, lets train our model. **Click on the hamburger icon at the top left of the screen> Under Analytics click on Machine Learning> Under Data Frame Analytics click on Jobs> Then click Create job** As we create our ML mode make sure to set "Feature Importance Values to the amount of features we have.
