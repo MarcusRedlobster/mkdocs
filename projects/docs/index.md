@@ -206,3 +206,18 @@ PUT _ingest/pipeline/ml-mitre-ta0002-execution-pipeline
 
  
 ```
+
+### Creating Azure Function
+
+Now that we have the pipeline and the model all done, next we need to set up an Azure Function so that we can automate the process of running our models againts our siem logs. Here is how we do that...
+
+1. Activate your role in azure
+2. Download the **"Azure Account", "Azure Functions", and "Azure Resources"** extensions in VSCode.
+3. Click on the **Azure Icon** on the left side bar in VSCode.
+4. Sign into your **Azure account**.
+5. Create an Azure Function by clicking on the **Subscription** of your choice, then right click on **Function App**, then click **Create Function App in Azure**
+6. Enter a **Globally Unique** name for you Azure Function.
+7. Select the appropriate **Coding Language**
+8. Select a **Location**
+9. Select a **Resource Group**
+10. Now you can insert your code into the .py file called **__init__.py**
