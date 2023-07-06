@@ -80,3 +80,127 @@ result.to_csv('siem.csv', index=False, header=True)
 
 ### Elastic Model Trainng
 To import our data into elastic **Click on the hamburger icon at the top left of the screen> Then on Machine Learning> and then on File> Import the appropriate csv file that was concatenated and cleaned.** Now that we have our data ready to go, lets train our model. **Click on the hamburger icon at the top left of the screen> Under Analytics click on Machine Learning> Under Data Frame Analytics click on Jobs> Then click Create job** As we create our ML mode make sure to set "Feature Importance Values to the amount of features we have.
+
+### Elastic Pipeline
+
+```
+PUT _ingest/pipeline/ml-mitre-ta0002-execution-pipeline 
+
+{ 
+
+  "description": "Inference pipeline for ml-mitre-ta0002-execution model", 
+
+  "processors": [ 
+
+    { 
+
+      "inference": { 
+
+        "model_id": "ml-mitre-ta0002-execution-model-1686766767712", 
+
+        "inference_config": { 
+
+          "classification": {} 
+
+        }, 
+
+        "field_map": { 
+
+          "user.name": "user_name", 
+
+          "host.name": "host_name", 
+
+          "process.name": "process_name", 
+
+          "process.parent.name": "process_parent_name", 
+
+          "process.executable": "process_executable", 
+
+          "process.parent.executable": "process_parent_executable", 
+
+          "process.working_directory": "process_working_directory", 
+
+          "process.parent.working_directory": "process_parent_working_directory", 
+
+          "process.args": "process_args", 
+
+          "process.parent.args": "process_parent_args", 
+
+          "process.entity_id": "process_entity_id", 
+
+          "process.parent.entity_id": "process_parent_entity_id", 
+
+          "host.os.type": "host_os_type" 
+
+        } 
+
+      } 
+
+    }, 
+
+    { 
+
+      "script": { 
+
+        "source": """ 
+
+          if (ctx.containsKey('user') && ctx.user.containsKey('id') && ctx.user.id instanceof String) { 
+
+            try { 
+
+              ctx.user.id = Long.parseLong(ctx.user.id); 
+
+            } catch (NumberFormatException e) { 
+
+              ctx.user.id = null; 
+
+            } 
+
+          } 
+
+        """ 
+
+      } 
+
+    }, 
+
+    { 
+
+      "set": { 
+
+        "field": "whitelist", 
+
+        "value": "{{ml.inference.whitelist}}" 
+
+      } 
+
+    }, 
+
+    { 
+
+      "script": { 
+
+        "source": """ 
+
+          if (ctx.whitelist.equals("1")) { 
+
+            ctx.whitelist = true; 
+
+          } else if (ctx.whitelist.equals("0")) { 
+
+            ctx.whitelist = false; 
+
+          } 
+
+        """ 
+
+      } 
+
+    } 
+
+  ] 
+
+} 
+
+ 
+```
